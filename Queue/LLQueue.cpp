@@ -36,11 +36,55 @@ class SLL {
 	    void Delete_After(T);//Delete the node after the data 
 	    void Display();//Displays the list
 		T& getFrontValue();
+        T getEndValue();
 	    int Search_data(T);//search the data and return the node number if present, else return -1.  
 	    T Length_of_list();//counts the number of nodes in list
 		bool isFull();
 		bool isEmpty();
 };
+
+template<class T>
+class LLQueue{
+    private:
+    SLL<T> *Q;
+
+    public:
+    LLQueue();
+    ~LLQueue();
+    void EnQueue(T data);
+    T DeQueue();
+    T process() const;
+
+};
+
+template<class T>
+LLQueue<T>::LLQueue()
+{
+    Q = new SLL<T>();
+}
+template<class T>
+LLQueue<T>::~LLQueue()
+{
+    if(Q)
+    delete Q;
+}
+template< class T>
+void LLQueue<T>::EnQueue(T data)
+{
+    Q->Insert_at_End(data);
+}
+template <class T>
+T LLQueue<T>::DeQueue()
+{
+    T value = Q->getFrontValue();
+    Q->Delete_from_front();
+    return value;
+}
+template<class T>
+T LLQueue<T>::process() const
+{
+    return Q->getFrontValue();
+}
 template< class T>
 Node<T>::Node() {
 
@@ -84,6 +128,16 @@ void SLL<T>::Insert_at_Head(T value)
 		head = newNode;
 	}	
 	size++;
+}
+template<class T>
+T SLL<T>::getEndValue()
+{
+    Node<T> *temp = head;
+    while (temp->next)
+    {
+        temp = temp->next;
+    }
+    return temp->data;
 }
 template < class T>
 void SLL<T>::Insert_at_End(T value)
@@ -352,5 +406,14 @@ int SLL<T>::Search_data(T value)
 
 int main()
 {
-    
+    LLQueue<int> q;
+    q.EnQueue(2);
+    q.EnQueue(5);
+    q.EnQueue(6);
+    q.EnQueue(1);
+    cout<<q.process()<<endl;
+    cout<<q.DeQueue()<<endl;
+    cout<<q.DeQueue()<<endl;
+    cout<<q.DeQueue()<<endl;
+    cout<<q.DeQueue()<<endl;
 }
