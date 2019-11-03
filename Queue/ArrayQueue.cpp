@@ -1,11 +1,6 @@
 #include<iostream>
 #include<cstring>
 using namespace std;
-#define MAX 30
-template<class T>
-class DSA;
-template<class T>
-class ArrayStack;
 
 template<class T>
 class DSA{
@@ -25,110 +20,105 @@ class DSA{
 		 T& operator [](int i); // it returns refence of of given element index
 		 const T& operator[](int i) const; // it just return value at given index
 		 bool find(T element); // 
-		  void printArray();
+		 void printArray();
 		 T getValue(int i);
 		 void insert(int i  , T data);
+		 
 };
 
 template<class T>
-class ArrayStack
-{
-private:
-    int top;
-    DSA<T> *stk;
-public:
-    ArrayStack();
-    ArrayStack(int);
-    ~ArrayStack();
-    void push(T d);
-    T pop();
-    ArrayStack<T>& multiPop(int elements);
-    void multiPush(DSA<T>& stack);
-    T& peek();
-    bool isFull();
+class ArrayQueue{
+
+    private:
+    DSA<T> *Q;
+    int first;
+    int last;
+    int size;
+    public:
+    ArrayQueue();
+    ArrayQueue(int size);
+    ~ArrayQueue();
+    void EnQueue(T data);
+    T Dequeue();
+    T& process();
     bool isEmpty();
-
+    bool isFull();
 };
 
 template<class T>
-ArrayStack<T>::ArrayStack()
+ArrayQueue<T>::ArrayQueue()
 {
-    stk = new DSA<T>(0);
-    top = -1;
+    Q = new DSA<T>(0);
+    first = last = -1;
+    size = 0;
 }
 template<class T>
-ArrayStack<T>::ArrayStack(int size)
+ArrayQueue<T>::~ArrayQueue()
 {
-    stk = new DSA<T>(size);
-    top = -1;
+	if(Q)
+	delete Q;
 }
 template<class T>
-ArrayStack<T>::~ArrayStack()
+ArrayQueue<T>::ArrayQueue(int size)
 {
-    if(stk)
-    delete stk;
+    Q = new DSA<T>(size);
+    first = last = -1;
+    this->size = size;
 }
 template<class T>
-void ArrayStack<T>::push(T d)
+void ArrayQueue<T>::EnQueue(T data)
 {
     if(!isFull())
-    stk->insert(++top , d);
+    {
+        if(last == size -1 || last == -1)
+        {
+            last = 0;
+            Q->insert(last, data);
 
+            if(first == -1)
+            first = 0;
+        }
+        else
+            Q->insert(++last, data);
+        
+    }
+    else
+    cout<<"Queue is full "<<endl;
+    
 }
 template<class T>
-T ArrayStack<T>::pop()
+T ArrayQueue<T>::Dequeue()
 {
+    T temp;
     if(!isEmpty())
     {
-   	 return stk->getValue(top--) ;	
-	}
-	else
-	return 0;
-    
-}
-template<class T>
-bool ArrayStack<T>::isFull()
-{
-    return top>=MAX ;
-}
-template<class T>
-bool ArrayStack<T>::isEmpty()
-{
-    return top == -1 ;
-}
-template<class T>
-void ArrayStack<T>::multiPush(DSA<T> &obj)
-{
-    ArrayStack<T> *temp;
-    while(!obj.isEmpty())
-    {
-        temp->push(obj.pop());
+        if(first == last)
+        {
+            temp = Q->getValue(first);
+            first = last = -1;
+        }
+        else if(first == size -1)
+        {
+            temp = Q->getValue(first);
+            first = 0;
+        }
+        else
+         temp = Q->getValue(first++);
     }
-
-    while (!temp->isEmpty())
-    {
-        push(temp->pop());
-    }
-    
-}
-template<class T>
-ArrayStack<T>& ArrayStack<T>::multiPop(int elements)
-{
-    ArrayStack<T> *temp;
-
-    for (int i = 0; i < elements; i++)
-    {
-        temp->push(pop());
-    }
+    else
+    cout<<"Queue is empty"<<endl;
     return temp;
-    
 }
 template<class T>
-T& ArrayStack<T>::peek()
+bool ArrayQueue<T>::isFull()
 {
-	return stk[top];
+    return ((first == 0 && last == size -1) || (last == first-1) ) ;
 }
-
+template<class T>
+bool ArrayQueue<T>::isEmpty()
+{
+    return ( (first == -1 ));
+}
 template<class T>
 DSA<T>::DSA () 
 	{
@@ -153,11 +143,6 @@ void DSA<T>::insert(int i , T data)
 	*(Data + i) = data;
 }
 template<class T>
-T DSA<T>::getValue(int index)
-{
-    return *(Data + index );
-}
-template<class T>
 DSA<T>& DSA<T>:: operator=( const DSA<T> & rhs)
 {
     if (this  != &rhs)
@@ -173,8 +158,7 @@ DSA<T>& DSA<T>:: operator=( const DSA<T> & rhs)
 
 template<class T>
 T& DSA<T>::operator [] (int i){   
-   		
-   		
+
    			 return (*(Data+i));
 }
 
@@ -183,7 +167,11 @@ const T& DSA<T>::operator [] (int i) const {
    		
    			return (*(Data+i));
 }
-
+template<class T>
+T DSA<T>::getValue(int index)
+{
+    return *(Data + index );
+}
 template<class T>
 int DSA<T>::Size ()
 	{
@@ -248,17 +236,34 @@ bool DSA<T>::find(T element)
 	return false;
 }
 
-
 int main()
 {
-	ArrayStack<int> stack(10);
-	stack.push(1);
-	stack.push(2);
-	stack.push(3);
-	stack.push(4);
+    ArrayQueue<int> q(5);
+    q.EnQueue(5);
+    q.EnQueue(6);
+    q.EnQueue(10);
+    q.EnQueue(3);
+    q.EnQueue(9);
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<endl;
+    q.EnQueue(12);
+    q.EnQueue(15);
+    q.EnQueue(18);
 
-	cout<<stack.pop()<<endl;
-	cout<<stack.pop()<<endl;
-	cout<<stack.pop()<<endl;
-	cout<<stack.pop()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    q.EnQueue(12);
+    q.EnQueue(15);
+    q.EnQueue(18);
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+    cout<<q.Dequeue()<<endl;
+
 }
