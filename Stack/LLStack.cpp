@@ -210,7 +210,7 @@ bool SLL<T>::isEmpty()
 template<class T>
 bool SLL<T>::isFull()
 {
-	return (new Node<T>()) == nullptr;
+	return (new Node<T>()) == NULL;
 }
 template<class T>
 T& SLL<T>::getFrontValue()
