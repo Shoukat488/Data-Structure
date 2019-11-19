@@ -25,14 +25,14 @@ class TreeNode{
         if(value < data)
         {
             if(leftNode == NULL)
-            data = value;
+            leftNode->data = value;
             else
             leftNode->insert(value);                
             
         } else if(value > data)
         {
             if(rightNode == NULL)
-            data = value;
+            rightNode->data = value;
             else
             rightNode->insert(value);                
             
@@ -44,7 +44,7 @@ class TreeNode{
         if(leftNode != NULL)
         leftNode->traverseInOrder();
 
-        // cout<<data<<" ";
+        cout<<data<<" ";
 
         if(rightNode != NULL)
         rightNode->traverseInOrder();
