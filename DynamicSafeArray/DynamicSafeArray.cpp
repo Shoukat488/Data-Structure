@@ -1,6 +1,5 @@
 #include "DynamicSafeArray.h"
 
-
 DynamicSafeArray::DynamicSafeArray(): size(0), data(0){}
 DynamicSafeArray::DynamicSafeArray(int s) : size(s)
 {

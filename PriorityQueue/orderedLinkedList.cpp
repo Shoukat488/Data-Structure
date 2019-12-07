@@ -1,14 +1,21 @@
 #include<iostream>
 using namespace std;
-
+template<class T>
+class Node;
 template<class T>
 class SLL;
 
-template<class T>
-class Node;
+template< class T>
+class PriorityQueue{
 
-template <class T> 
-class LStack;
+	public:
+	SLL<T> *queue;
+	public:
+	PriorityQueue();
+	void push(T data);
+	T pop();
+	T peek();
+};
 template<class T>
 class Node  
 {  
@@ -26,7 +33,7 @@ class Node
 template<class T>
 class SLL {
 	
-	private:
+	public:
 		int size;
 		Node<T> *head;
 		
@@ -44,102 +51,17 @@ class SLL {
 	    void Delete_After(T);//Delete the node after the data 
 	    void Display();//Displays the list
 		T& getFrontValue();
+        T getEndValue();
 	    int Search_data(T);//search the data and return the node number if present, else return -1.  
 	    T Length_of_list();//counts the number of nodes in list
 		bool isFull();
 		bool isEmpty();
+        void removeDuplicates();
+	    void swapNode(int , int);
+	    void sort();
+		Node<T> * Reverse();
+		int count(T value);
 };
-
-template<class T>
-class LStack {
-
-	private:
-	SLL<T> *stk;
-
-	public:
-	LStack();
-	~LStack();
-	bool isEmpty();
-	bool isFull();
-	void push(T data);
-	void MultiPush(LStack<T> &stack);
-	LStack<T> MultiPop(int elements);
-	T pop();
-	T peek() const;
-};
-
-template<class T>
-LStack<T>::LStack()
-{
-	stk = new SLL<T>();
-}
-template<class T>
-LStack<T>::~LStack()
-{
-	if(stk)
-	delete stk;
-}
-template<class T>
-bool LStack<T>::isEmpty()
-{
-	return stk->isEmpty();
-}
-
-template<class T>
-bool LStack<T>::isFull()
-{
-	return (stk->isFull()) ;
-}
-
-template<class T>
-void LStack<T>::push(T data)
-{
-	if(!isFull())
-	stk->Insert_at_Head(data);
-}
-
-template<class T>
-T LStack<T>::pop()
-{
-	T temp;
-	if(!isFull())
-	{
-		temp = stk->Delete_from_front();
-		return temp;
-	}
-	return 0;
-}
-template< class T>
-T LStack<T>::peek() const
-{
-	return stk->getFrontValue();
-}
-template<class T>
-void LStack<T>::MultiPush(LStack<T> &stack)
-{
-	LStack<T> temp;
-	while(!stack.isEmpty())
-	{
-		temp.push(stack.pop());
-	}
-
-	while(!temp.isEmpty())
-	{
-		push(temp.pop());
-	}
-}
-template<class T>
-LStack<T> LStack<T>::MultiPop(int elements)
-{
-	LStack<T> temp;
-
-	for(int i = 0 ; i < elements && !isEmpty() ; i++)
-	{
-		temp.push(pop());
-	}
-	return temp;
-}
-
 template< class T>
 Node<T>::Node() {
 
@@ -184,6 +106,16 @@ void SLL<T>::Insert_at_Head(T value)
 	}	
 	size++;
 }
+template<class T>
+T SLL<T>::getEndValue()
+{
+    Node<T> *temp = head;
+    while (temp->next)
+    {
+        temp = temp->next;
+    }
+    return temp->data;
+}
 template < class T>
 void SLL<T>::Insert_at_End(T value)
 {
@@ -209,11 +141,12 @@ bool SLL<T>::isEmpty()
 template<class T>
 bool SLL<T>::isFull()
 {
-	return (new Node<T>()) == NULL;
+	return (new Node<T>() == NULL);
 }
 template<class T>
 T& SLL<T>::getFrontValue()
 {
+	if(!isEmpty())
 	return head->data;
 }
 template < class T>
@@ -448,31 +381,239 @@ int SLL<T>::Search_data(T value)
 	}
 	return -1;
 }
+template<class T>
+void SLL<T>::removeDuplicates()
+{
+	if(head==0)
+	return;
+	else
+	{
+		int count = 0;
+		
+		Node<T> *temp = head;
+		SLL<T> *mark = new SLL<T>();
+		
+		while(temp != 0)
+		{
+			if(mark->Search_data(temp->data) != -1)
+			Delete_at(count);
+			else
+			{
+				mark->Insert_at_End(temp->data);
+			}
+			count++;
+			temp =temp->next;
+		}
+	}
+}
+
+template<class T>
+void SLL<T>::swapNode(int x , int y )
+{
+    if( ( x < 0  && y >= size ) || ( x == y ) || ( x > y ))
+    return;
+
+    Node<T> *prevX , *prevY  , *nextY , *p ;
+    if( x ==  y-1)
+    {
+    	p = head;
+        Node<T> *Px , *Py ;
+        for(int i = 0 ; i < x  ; i++)
+        {
+            prevX = p;
+            p = p->next;
+        }
+        Px = p;
+        Py = p->next;
+		prevX->next = Py;
+		Px->next = Py->next;
+		Py->next = Px;
+	}
+    else if(x == 0 && y < size -1)
+    {
+        p = head;
+        for(int i = 0 ; i < y  ; i++)
+        {
+            prevY = p;
+            p = p->next;
+        }
+        nextY = p->next;
+        prevY->next = head;
+        p->next = head->next;
+        head->next = nextY;
+        head = p;
+    }
+    else if(x ==0 && y == size -1)
+    {
+        p = head;
+        for(int i = 0 ; i < y  ; i++)
+        {
+            prevY = p;
+            p = p->next;
+        }
+        prevY->next = head;
+        p->next = head->next;
+        head->next = 0;
+        head = p;
+    }
+    else if( x > 0 && y == size -1)
+    {
+        p = head;
+        Node<T> *Px , *Py;
+
+        for(int i = 0 ; i < x  ; i++)
+        {
+            prevX = p;
+            p = p->next;
+        }
+        Px = p;
+        p = head;
+        for(int i = 0 ; i < y  ; i++)
+        {
+            prevY = p;
+            p = p->next;
+        }
+        Py = p;
+
+        Py->next = Px->next;
+        prevX->next = Py;
+        prevY->next = Px;
+        Px->next = 0;
+    }
+    else if( x > 0 && y < size -1)
+    {
+        p = head;
+        Node<T> *Px , *Py , *NextY;
+
+        for(int i = 0 ; i < x  ; i++)
+        {
+            prevX = p;
+            p = p->next;
+        }
+        Px = p;
+        p = head;
+        for(int i = 0 ; i < y  ; i++)
+        {
+            prevY = p;
+            p = p->next;
+        }
+        Py = p;
+        NextY = Py->next;
+        Py->next = Px->next;
+        prevX->next = Py;
+        prevY->next = Px;
+        Px->next = NextY;
+        prevY->next = Px;
+    }
+	
+}
+template< class T>
+void SLL<T>::sort()
+{
+	if(head == 0)
+	return;
+	else
+	{
+		int i = 0 ;
+		int j  ;
+		Node<T> *temp1 = head;
+		Node<T> *temp2 ;
+		while( temp1 != 0 && i < size )
+		{
+		temp2 = head;
+			j = 0;
+			while( j < size - i && temp2 != 0 )
+			{
+				if(temp2->next == 0 )
+				break;
+				
+				if( (temp2->data ) < (temp2->next->data))
+					{		
+						T tempData = temp2->data;
+						temp2->data = temp2->next->data;
+						temp2->next->data = tempData;	
+					}
+				
+				temp2 = temp2->next;
+				j++;
+			}
+			temp1 = temp1->next;
+			i++;
+		}
+		
+	}
+}
+template<class T>
+Node<T> * SLL<T>::Reverse()
+{
+	if(head == 0 )
+	{
+		return 0;
+	}
+	
+	Node<T> * p = head;
+	Node<T> *q = p->next;
+	
+	if(q == 0)
+	return 0;
+	head  = q;
+	q = Reverse();
+	
+	p->next->next = p;
+	p->next = 0;
+	
+	return q;
+}
+template<class T>
+int SLL<T>::count(T value)
+{
+	Node<T> *temp = head;
+	int count_var  = 0;
+	while(temp)
+	{
+		if(temp->data == value)
+		 count_var++;
+		 
+		 temp = temp->next;
+	}
+	
+	return count_var;
+}
+template<class T>
+PriorityQueue<T>::PriorityQueue()
+{
+	queue = new SLL<T>();
+}
+template<class T>
+void PriorityQueue<T>::push(T data)
+{
+	queue->Insert_at_End(data);
+    queue->sort();
+}
+template<class T>
+T PriorityQueue<T>::pop()
+{
+	T temp = queue->getFrontValue();
+	queue->Delete_from_front();
+	return temp;
+}
+template<class T>
+T PriorityQueue<T>::peek()
+{
+	T temp = queue->getFrontValue();
+	return temp;
+}
 int main()
 {
-    LStack<int> stack;
-    LStack<int> s2;
-	stack.push(5);
-	stack.push(3);
-	stack.push(6);
-	stack.push(7);
-
-	// cout<<stack.pop();
-	// cout<<stack.pop();
-	// cout<<stack.peek();
-
-	s2.push(5);
-	s2.push(8);
-	s2.push(60);
-	s2.push(73);
-
-	// cout<<s2.pop()<<endl;
-	// cout<<s2.pop()<<endl;
-	// cout<<s2.pop()<<endl;
-	// cout<<s2.pop()<<endl;
-	stack.MultiPush(s2);
-
-	cout<<stack.peek()<<endl;
-	LStack<int > newStack = stack.MultiPop(4);
-	cout<<newStack.pop();
+	PriorityQueue<int> p;
+	p.push(5);
+	p.push(4);
+	p.push(50);
+	p.push(3);
+	p.push(20);
+	cout<<p.pop()<<endl;
+	cout<<p.pop()<<endl;
+	cout<<p.pop()<<endl;
+	cout<<p.pop()<<endl;
+	cout<<p.pop()<<endl;
 }

@@ -164,7 +164,7 @@ bool SLL<T>::isEmpty()
 template<class T>
 bool SLL<T>::isFull()
 {
-	return (new Node<T>()) == nullptr;
+	return (new Node<T>()) == NULL;
 }
 template<class T>
 T& SLL<T>::getFrontValue()
@@ -406,14 +406,15 @@ int SLL<T>::Search_data(T value)
 
 int main()
 {
-    LLQueue<int> q;
-    q.EnQueue(2);
-    q.EnQueue(5);
-    q.EnQueue(6);
-    q.EnQueue(1);
-    cout<<q.process()<<endl;
-    cout<<q.DeQueue()<<endl;
-    cout<<q.DeQueue()<<endl;
-    cout<<q.DeQueue()<<endl;
-    cout<<q.DeQueue()<<endl;
+	LLQueue<string> q;
+	q.EnQueue("shoukat");
+	q.EnQueue("ahmed");
+	q.EnQueue("khan");
+	q.EnQueue("friend");
+	q.EnQueue("jigar");
+
+	cout<<q.DeQueue()<<endl;
+	cout<<q.DeQueue()<<endl;
+	cout<<q.DeQueue()<<endl;
+	cout<<q.DeQueue()<<endl;
 }

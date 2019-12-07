@@ -104,10 +104,14 @@ T ArrayQueue<T>::Dequeue()
         }
         else
          temp = Q->getValue(first++);
+
+        return temp;
     }
     else
-    cout<<"Queue is empty"<<endl;
-    return temp;
+    {
+        cout<<"Queue is empty"<<endl;
+        return 0;
+    }
 }
 template<class T>
 bool ArrayQueue<T>::isFull()

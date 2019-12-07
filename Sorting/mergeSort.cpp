@@ -13,7 +13,7 @@ void copyElements(int *array , int *temp , int startTemp , int startArray , int 
 
 void merge(int *array , int start, int mid , int end)
 {
-    if(array[mid-1] <= array[mid])
+    if(array[mid-1] <= array[mid]) // it is sorted
     return;
     int i = start;
     int j  = mid;

@@ -73,7 +73,6 @@ void ArrayStack<T>::push(T d)
 {
     if(!isFull())
     stk->insert(++top , d);
-
 }
 template<class T>
 T ArrayStack<T>::pop()
@@ -84,7 +83,6 @@ T ArrayStack<T>::pop()
 	}
 	else
 	return 0;
-    
 }
 template<class T>
 bool ArrayStack<T>::isFull()
@@ -109,7 +107,6 @@ void ArrayStack<T>::multiPush(DSA<T> &obj)
     {
         push(temp->pop());
     }
-    
 }
 template<class T>
 ArrayStack<T>& ArrayStack<T>::multiPop(int elements)

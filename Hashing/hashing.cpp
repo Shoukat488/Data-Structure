@@ -6,18 +6,23 @@ class HashStore{
 
     public:
     int data;
-    int key;
-
+    string key;
+	
     public:
     HashStore()
     {
-
+		key = "";
     }
-    HashStore(int data , int key)
+    HashStore( string key , int data)
     {
         this->data = data;
         this->key = key;
     }
+    void set(string key , int data)
+    {
+    	this->data = data;
+    	this->key = key;
+	}
 };
 
 class HashTable {
@@ -25,17 +30,18 @@ class HashTable {
     private:
     int size;
     int currentSize;
-    HashStore *table[] ;
+    HashStore **table ;
 
     public:
     HashTable(int size)
     {
         this->size = size;
         currentSize = 0;
-        for(int i = 0 ; i < size ; i ++)
-        table[i] = 0;
+        table = new HashStore*[size];
+        for(int i = 0 ; i < size ; i++)
+        table[i] = NULL ;
     }
-    void put(int key , int data)
+    void put(string key , int data)
     {
         int hashedKey = hashKey(key);
         if(isOccupied(hashedKey))
@@ -45,13 +51,13 @@ class HashTable {
             hashedKey = 0;
             hashedKey++;
 
-            while (isOccupied(hashedKey) && hashedKey != stopIndex)
+            while (  hashedKey != (stopIndex) && isOccupied(hashedKey))
                 hashedKey = (hashedKey+1)%size;
             
             if(!isOccupied(hashedKey))
             {
                 currentSize++;
-                table[hashedKey] = new HashStore(hashedKey , data);
+                table[hashedKey] = new HashStore(key , data);
             }
             else
                 cout<<"Table is full ";
@@ -59,20 +65,22 @@ class HashTable {
         else if(!isFull())
         {
             currentSize++;
-            table[hashedKey] = new HashStore(hashedKey , data);
+            table[hashedKey] = new HashStore(key , data);
         }
         else
                 cout<<"Table is full ";
-
-        
     }
     bool isOccupied(int key)
     {
-        return table[key] != 0;
+    	if(key == size)
+    	return false;
+    	if(table[key]->key == "")
+        return true;
+        return false;
     }
-    int hashKey(int key)
+    int hashKey(string key)
     {
-        return ( key % size);
+        return ( key.length() % size);
     }
     bool isFull()
     {
@@ -86,13 +94,13 @@ class HashTable {
         }
         
     }
-    int findKey(int key)    
+    int findKey(string key)    
     {
         int hashedKey = hashKey(key);
-        if(table[hashedKey] != 0 && table[hashedKey]->key == key) 
+        if(table[hashedKey]->key != "" && table[hashedKey]->key == key) 
         return hashedKey;
 
-        if(table[hashedKey] != 0)
+        if(table[hashedKey]->key != "")
         {
             int stopIndex = hashedKey;
             if(hashedKey == size -1)
@@ -100,10 +108,15 @@ class HashTable {
             else
             hashedKey++;
 
-            while (table[hashedKey]->key != key && hashedKey != stopIndex)
+            while ( table[hashedKey]->key != key && hashedKey != stopIndex)
             {
             
                 hashedKey = (hashedKey+1)%size;
+                
+                if(table[hashedKey]->key == "")
+                {
+                    continue;
+                }
             }
             
             if(table[hashedKey]->key == key)
@@ -115,7 +128,7 @@ class HashTable {
         else
         return -1;
     }
-    int  get(int key)
+    int  get(string key)
     {
         int hashedKey = findKey(key);
         if(hashedKey != -1 )
@@ -129,14 +142,15 @@ class HashTable {
 int main()
 {
     HashTable t(10);
-    t.put( 43, 5);
-    t.put( 61, 6);
-    t.put( 12, 8);
-    t.put( 43, 4);
-    t.put( 54, 6);
-    t.put( 54, 76);
-    t.put( 65, 9);
+    t.put( "43", 5);
+    t.put( "61", 6);
+    t.put( "12", 8);
+    t.put( "43", 4);
+    t.put( "54", 6);
+    t.put( "54", 76);
+    t.put( "65", 9);
+    t.put( "67", 9);
 
-    cout<<t.get(61);
+    cout<<t.get("61");
     t.print();
 }
